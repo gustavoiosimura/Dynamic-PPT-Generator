@@ -29,10 +29,15 @@ app.post('/', async (req, res) => {
             const content = await files[file].async('string');
             let updatedContent = content.replace(/#token#/g, `my-var`); 
             zip.file(file, updatedContent);
-        }
     }
 
-    res.json({ message: 'Data received successfully', receivedData: data });
+    // Generate the modified PPTX
+    const modifiedPptxBuffer = await zip.generateAsync({ type: 'nodebuffer' });
+
+    // Encode the modified PPTX Buffer as a Base64 string
+    const modifiedPptxBase64 = modifiedPptxBuffer.toString('base64');
+
+    res.json({ message: 'Data received successfully', pptx: modifiedPptxBase64 });
 });
 
 
